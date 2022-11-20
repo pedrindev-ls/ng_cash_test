@@ -5,6 +5,7 @@ import jwtInterface from "../interfaces/jwtInterface";
 
 export default class LoginService {
   private _jwtService: JwtService;
+  
   constructor(private user = User) {
     this._jwtService = new JwtService()
   }
