@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  node:
+    image: node:16.18.1
+    # build: .
+    # user: node
+    working_dir: /app
+    volumes:
+      - ./:/app
+    container_name: ng_cash
+    tty: true
+    stdin_open: true
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DATABASE: ng_db
+      HOSTNAME: db
+      JWT_SECRET: secretJWT
+  db:
+    container_name: ng_cash_db
+    image: postgres:latest
+    platform: linux/x86_64
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+
+networks:
+  default:
+    name: ng_cash_net
