@@ -2,6 +2,7 @@ import JwtService from "../middlewares/JwtService";
 import User from "../database/models/User";
 import { Md5 } from "ts-md5"
 import jwtInterface from "../interfaces/jwtInterface";
+import ErrorInterface from "../interfaces/errorInterface";
 
 export default class LoginService {
   private _jwtService: JwtService;
@@ -15,6 +16,12 @@ export default class LoginService {
       where: { username, password: Md5.hashStr(password) },
       attributes: {  exclude: ['password']}
     })
+
+    if (!item) {
+      const error: ErrorInterface = new Error('Incorrect email or password');
+      error.status = 401;
+      throw error;
+    }
     
     const info: jwtInterface = item?.dataValues
 

@@ -10,7 +10,6 @@ export default class JwtService {
 
   verifyToken = (token: string) => {
     const items = jwt.verify(token, process.env.JWT_SECRET || 'secretJWT')
-    console.log(items)
     
     return items as jwt.JwtPayload
   }

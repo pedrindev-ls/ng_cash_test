@@ -12,13 +12,4 @@ export default class AccountController {
 
     res.status(200).json(item)
   }
-
-  async getTransactions(req: Request, res: Response) {
-    const { authorization } = req.headers
-    
-    const item = await this.aService.getTransactions(authorization as string)
-    console.log(item);
-
-    res.status(200).json(item)
-  }
 }
