@@ -13,7 +13,7 @@ export default class UserService {
   }
 
   async register(username: string, password: string) {
-    const regex = /[A-Za-z][0-9]|[0-9][A-Za-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]/;
+    const regex = /[A-Z]+[a-z]+[0-9]+|[0-9]+[A-Z]+[a-z]+|[0-9]+[a-z]+[A-Z]+|[a-z]+[A-Z]+[0-9]+/;
     const passwordTest = regex.test(password)    
     const usernameTest = await this.user.findOne({ where: { username } })
 
@@ -23,9 +23,18 @@ export default class UserService {
       throw error;
     }
 
+    console.log('primeiro erro');
+    
+
     if (passwordTest && !usernameTest) {
       const { dataValues } = await this.account.create({ balance: '100,00' })
+      console.log(dataValues);
       const newUser = await this.user.create({ username, password: Md5.hashStr(password), accountId: dataValues.id })
+      console.log('newUser');
+    } else {
+      const error: ErrorInterface = new Error('Credenciais invalidas');
+      error.status = 401;
+      throw error;
     }
   }
 }
