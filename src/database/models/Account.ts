@@ -13,7 +13,7 @@ Account.init({
     allowNull: false,
     autoIncrement: true,
   },
-  balance: DataTypes.STRING,
+  balance: DataTypes.INTEGER,
 }, {
   underscored: true,
   sequelize: db,

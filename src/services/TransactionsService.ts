@@ -3,8 +3,7 @@ import Transaction from "../database/models/Transactions";
 import { Op } from "sequelize";
 import ErrorInterface from "../interfaces/errorInterface";
 import AccountService from "./AccountService";
-import userInterface from "../interfaces/userInterface";
-import User from "../database/models/User";
+import Account from "../database/models/Account";
 
 export default class TransactionsService {
   private _jwtService: JwtService
@@ -51,24 +50,28 @@ export default class TransactionsService {
     return items
   }
 
-  // async newTransactions(token: string, creditedAccount: number, value: string) {
-  //   const debitedUser = await this.aService.getBalance(token)
-  //   const { accountInfo } = debitedUser
-  //   const creditedUser = await this.aService.getBalanceWithId(creditedAccount) as User
+  async newTransactions(debitedAccountId: number, creditedAccountId: number, value: number) {
+    const cAccount = await this.aService.getBalanceWithId(debitedAccountId)
+    const { dataValues } = cAccount as Account
 
-  //   if(Number(accountInfo.balance) > Number(value)) {
-  //     const error: ErrorInterface = new Error('Saldo Insuficiente');
-  //     error.status = 400;
-  //     throw error;
-  //   }
-  //   if(creditedAccount === debitedUser.id) {
-  //     const error: ErrorInterface = new Error('Impossível enviar uma transferencia para a sua própria conta');
-  //     error.status = 400;
-  //     throw error;
-  //   }
-    
-  //   accountInfo.balance = JSON.stringify(Number(accountInfo.balance) - Number(value))
+    if(debitedAccountId === creditedAccountId) {
+      const error: ErrorInterface = Error('Impossível realizar uma transferencia para sua propria conta')
+      error.status = 400
+      throw error
+    }
 
-  //   return creditedUser
-  // }
+    if(Number(dataValues.balance) < Number(value)) {
+      console.log('foi');
+      const error: ErrorInterface = Error('Saldo insuficiente')
+      error.status = 400
+      throw error
+    }
+
+    const newDebitedAccountValue = dataValues.balance - value
+
+    const { dataValues: { balance } } = await this.aService.getBalanceWithId(creditedAccountId) as Account
+    const newCreditedAccountValue = balance + value
+    await this.aService.updateBalance(creditedAccountId, newCreditedAccountValue)
+    await this.aService.updateBalance(debitedAccountId, newDebitedAccountValue)
+  }
 }

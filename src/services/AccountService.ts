@@ -5,11 +5,11 @@ import User from "../database/models/User";
 export default class AccountService {
   private _jwtService: JwtService
 
-  constructor(private user = User) {
+  constructor(private user = User, private account = Account) {
     this._jwtService = new JwtService()
   }
 
-  async getBalance(auth: string) {
+  async getUserAndBalance(auth: string) {
     const { data: { username, accountId }} = this._jwtService.verifyToken(auth)
     
     const item = await this.user.findOne({
@@ -29,20 +29,12 @@ export default class AccountService {
   }
 
   async getBalanceWithId(id: number) {
-    const item = await this.user.findByPk(id, {
-        include: [{
-          model: Account,
-          as: 'accountInfo',
-          attributes: {
-            exclude: ['id']
-          }
-        }],
-        attributes: {
-          exclude: ['password', 'accountId']
-        }
-      }
-    )
+    const item = await this.account.findByPk(id)
 
     return item
+  }
+
+  async updateBalance(id: number, balance: number) {
+    return await this.account.update({ balance }, { where: { id } })
   }
 }

@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
+import AccountService from "../services/AccountService";
+import JwtService from "../middlewares/JwtService";
 import TransactionsService from "../services/TransactionsService";
 
 export default class TransactionsController {
-  constructor(private tService = new TransactionsService()) {}
+  private _jwtService: JwtService
+  constructor(private tService = new TransactionsService(), private aService = new AccountService()) {
+    this._jwtService = new JwtService()
+  }
 
   async getTransactions(req: Request, res: Response) {
     const { authorization } = req.headers
@@ -29,12 +34,16 @@ export default class TransactionsController {
   }
 
 
-  // async newtransaction(req: Request, res: Response) {
-  //   const { authorization } = req.headers
-  //   const { creaditedAccount, value } = req.body
+  async newtransaction(req: Request, res: Response) {
+    const { authorization } = req.headers
+    const { creditedAccountId, value } = req.body
 
-  //   const item = await this.tService.newTransactions(authorization as string, creaditedAccount, value)
+    const { data: { id } } = this._jwtService.verifyToken(authorization as string)
 
-  //   res.status(200).json(item)
-  // }
+    await this.tService.newTransactions(id, creditedAccountId, value)
+    const newBalance = await this.aService.getUserAndBalance(authorization as string)
+    console.log(newBalance);
+
+    res.status(200).json(newBalance)
+  }
 }
