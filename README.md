@@ -1,4 +1,4 @@
-# Passo a passo para funcionar a API
+# Instruções para funcionar a API
   Execute o comando a baixo para ligar o <span><strong>docker compose</strong></span>
   - docker-compose up -d
   
