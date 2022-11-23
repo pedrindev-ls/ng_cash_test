@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "create:db": "npx sequelize-cli db:create && exit 1",
+    "create:db": "npx sequelize-cli db:create",
     "generate:db-info": "npx sequelize-cli db:migrate && npx sequelize db:seed:all",
-    "drop:db": "npx sequelize-cli db:drop exit 1",
+    "drop:db": "npx sequelize-cli db:drop",
     "build": "npx -y tsc",
     "dev": "nodemon ./src/Server.ts"
   },

@@ -42,7 +42,6 @@ export default class TransactionsController {
 
     await this.tService.newTransactions(id, creditedAccountId, value)
     const newBalance = await this.aService.getUserAndBalance(authorization as string)
-    console.log(newBalance);
 
     res.status(200).json(newBalance)
   }

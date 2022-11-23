@@ -20,7 +20,7 @@ export default class UserService {
 
     if (passwordTest && !usernameTest) {
       const { dataValues } = await this.account.create({ balance: 100.00 })
-      const newUser = await this.user.create({ username, password: Md5.hashStr(password), accountId: dataValues.id })
+      await this.user.create({ username, password: Md5.hashStr(password), accountId: dataValues.id })
     } else {
       const error: ErrorInterface = new Error('Credenciais invalidas');
       error.status = 401;

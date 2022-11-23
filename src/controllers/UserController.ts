@@ -8,7 +8,7 @@ export default class UserController {
 
   async register(req: Request, res: Response) {
     const { username, password } = req.body
-    const item = await this.uService.register(username, password)
+    await this.uService.register(username, password)
 
     res.status(201).send()
   }

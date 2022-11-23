@@ -50,6 +50,10 @@ export default class TransactionsService {
     return items
   }
 
+  async createTransaction(debitedAccount: number, creditedAccount: number, value: number) {
+    await this.transactions.create({ debitedAccount, creditedAccount, value })
+  }
+
   async newTransactions(debitedAccountId: number, creditedAccountId: number, value: number) {
     const cAccount = await this.aService.getBalanceWithId(debitedAccountId)
     const { dataValues } = cAccount as Account
@@ -61,7 +65,6 @@ export default class TransactionsService {
     }
 
     if(Number(dataValues.balance) < Number(value)) {
-      console.log('foi');
       const error: ErrorInterface = Error('Saldo insuficiente')
       error.status = 400
       throw error
@@ -70,8 +73,17 @@ export default class TransactionsService {
     const newDebitedAccountValue = dataValues.balance - value
 
     const { dataValues: { balance } } = await this.aService.getBalanceWithId(creditedAccountId) as Account
+
+    if(!dataValues) {
+      const error: ErrorInterface = Error('Conta não encontrada')
+      error.status = 400
+      throw error
+    }
+
     const newCreditedAccountValue = balance + value
+    
     await this.aService.updateBalance(creditedAccountId, newCreditedAccountValue)
     await this.aService.updateBalance(debitedAccountId, newDebitedAccountValue)
+    await this.createTransaction(debitedAccountId, creditedAccountId, value)
   }
 }
