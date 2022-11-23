@@ -38,9 +38,9 @@ export default class TransactionsController {
     const { authorization } = req.headers
     const { creditedAccountId, value } = req.body
 
-    const { data: { id } } = this._jwtService.verifyToken(authorization as string)
+    const { data: { accountId } } = this._jwtService.verifyToken(authorization as string)
 
-    await this.tService.newTransactions(id, creditedAccountId, value)
+    await this.tService.newTransactions(accountId, creditedAccountId, value)
     const newBalance = await this.aService.getUserAndBalance(authorization as string)
 
     res.status(200).json(newBalance)

@@ -64,3 +64,15 @@
   - informações:
     - headers: 
       - Authorization: cole o token da rota de login aqui
+
+  <span><strong>Rota para enviar transações</strong></span>
+  - url: http://localhost:3000/transactions
+  - método: POST
+  - informações:
+    - headers: 
+      - Authorization: cole o token da rota de login aqui
+    - Body(JSON): {
+      - creditedAccount: um numero com o id da conta que vai receber dinheiro (tabela Account)
+      - value: valor que será transferido
+    }
+      
